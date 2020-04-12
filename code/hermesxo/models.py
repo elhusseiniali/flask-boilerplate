@@ -1,5 +1,6 @@
 from hermesxo import db, login_manager
 from flask_login import UserMixin
+from sqlalchemy_utils import EmailType
 
 
 @login_manager.user_loader
@@ -13,6 +14,7 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
     username = db.Column(db.String(20), unique=True, nullable=False)
+    email = db.Column(EmailType)
 
     password = db.Column(db.String(60), nullable=False)
 
