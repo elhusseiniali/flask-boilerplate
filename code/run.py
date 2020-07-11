@@ -1,4 +1,4 @@
-from hermesxo import app
+from boilerplate import app
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,4 +1,4 @@
-from hermesxo import db, login_manager
+from boilerplate import db, login_manager
 from flask_login import UserMixin
 from sqlalchemy_utils import EmailType
 
