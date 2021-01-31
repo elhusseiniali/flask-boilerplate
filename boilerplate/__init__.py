@@ -45,12 +45,12 @@ def create_app(config_class=BaseConfig):
     login_manager.init_app(app)
     admin.init_app(app)
 
-    from boilerplate.api.users.views import users
-    from boilerplate.api.main.routes import main
+    from boilerplate.core.users.views import users
+    from boilerplate.core.main.routes import main
 
-    from boilerplate.api.errors.handlers import errors
+    from boilerplate.core.errors.handlers import errors
 
-    from boilerplate.api import blueprint as api
+    from boilerplate.core import blueprint as api
     app.register_blueprint(api, url_prefix='/api/1')
 
     app.register_blueprint(main)
