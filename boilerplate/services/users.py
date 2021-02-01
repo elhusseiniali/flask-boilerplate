@@ -60,10 +60,7 @@ class UserService():
             return False
 
         try:
-            user = user_dao.get_by_id(user_id=user_id)
-
-            user.delete()
-            db.session.commit()
+            user_dao.delete_user_by_id(user_id)
 
             return True
 
