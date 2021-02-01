@@ -110,6 +110,9 @@ class UserServiceTests(BaseTestCase):
             bad_id = user_service.delete_user(user_id='NotAnInteger')
             self.assertFalse(bad_id)
 
+            big_id = user_service.delete_user(user_id=100)
+            self.assertFalse(big_id)
+
 
 if __name__ == '__main__':
     unittest.main()  # pragma: no cover
