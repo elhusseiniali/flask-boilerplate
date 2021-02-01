@@ -5,7 +5,7 @@
 .vscode/
 
 # Database files (sqlite3)
-.db
+*.db
 
 
 # Byte-compiled / optimized / DLL files
