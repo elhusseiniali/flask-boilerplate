@@ -79,7 +79,7 @@ class AddUser(Resource):
 class getUser(Resource):
     """Resource to get a user by their ID.
     """
-    def put(self, user_id):
+    def get(self, user_id):
         """Get user by id.
 
         Parameters

@@ -112,12 +112,12 @@ class UserApiTests(BaseTestCase):
                                                   email="test"))
             self.assert_status(response, 400)
 
-    def test_put_user_by_id(self):
+    def test_get_user_by_id(self):
         with self.client:
             user = user_service.create_user(username="testing",
                                             email="testing@testing.com",
                                             password="12345")
-            response = self.client.put("/api/1/users/2")
+            response = self.client.get("/api/1/users/2")
             self.assert200(response)
 
             # Check if the user we got is equal to the one created
@@ -134,7 +134,7 @@ class UserApiTests(BaseTestCase):
                              user.image_file)
 
             # Check if we can get a user that doesn't exist
-            response = self.client.put("/api/1/users/6")
+            response = self.client.get("/api/1/users/6")
             self.assert404(response)
 
 
