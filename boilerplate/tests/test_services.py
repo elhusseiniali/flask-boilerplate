@@ -2,14 +2,19 @@ import unittest
 import pytest
 
 from boilerplate.services.users import UserService, user_service
+from boilerplate.dao.users import UserDAO
 from boilerplate.tests import BaseTestCase, db, User
 
 
 class UserServiceTests(BaseTestCase):
 
     @pytest.mark.xfail(raises=Exception)
-    def test_singelton(self):
+    def test_singelton_service(self):
         UserService()
+
+    @pytest.mark.xfail(raises=Exception)
+    def test_singelton_DAO(self):
+        UserDAO()
 
     def test_create_user(self):
         with self.client:
