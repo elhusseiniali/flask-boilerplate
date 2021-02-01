@@ -42,6 +42,10 @@ class UserApiTests(BaseTestCase):
                                              email="Test1@Test.com",
                                              password="12345")
 
+            user1_str = repr(user1)
+            self.assertIn(user1.username, user1_str)
+            self.assertIn(user1.email, user1_str)
+
             user2 = user_service.create_user(username="Test2",
                                              email="Test2@Test.com",
                                              password="12345")
