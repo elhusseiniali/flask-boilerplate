@@ -5,7 +5,6 @@ from boilerplate.tests import BaseTestCase
 
 
 class RouteTests(BaseTestCase):
-
     def test_home(self):
         response = self.client.get('/home', content_type='html/text')
         self.assert200(response)
@@ -19,16 +18,36 @@ class RouteTests(BaseTestCase):
         self.assert_context("title", "About")
 
     def test_login(self):
+        # Test that the page loads when not logged-in
         response = self.client.get('/login', content_type='html/text')
         self.assert200(response)
         self.assert_template_used('login.html')
         self.assert_context("title", "Log in")
 
     def test_register(self):
+        # Test that the page loads when not logged in
         response = self.client.get('/register', content_type='html/text')
         self.assert200(response)
         self.assert_template_used('register.html')
         self.assert_context("title", "Register")
+
+        # Test that a logged-in user is redirected to home
+        with self.client:
+            response = self.client.post(
+                '/login',
+                data=dict(email="ad@min.com", password="admin"),
+                follow_redirects=True
+            )
+            self.assert200(response)
+            self.assertTrue(current_user.is_active)
+            self.assertTrue(current_user.is_authenticated)
+
+            response = self.client.get('/register', content_type='html/text')
+
+            # Another way of checking that a redirect happened
+            # HTTP Code 302 means a redirect happened
+            self.assert_status(response, 302)
+            self.assert_template_used('home.html')
 
     def test_account(self):
         response = self.client.get(
@@ -49,7 +68,6 @@ class RouteTests(BaseTestCase):
 
 
 class LoginTests(BaseTestCase):
-
     def test_incorrect_login_password_empty(self):
         with self.client:
             response = self.client.post(
@@ -71,6 +89,7 @@ class LoginTests(BaseTestCase):
             self.assert200(response)
             self.assertTrue(current_user.is_active)
             self.assertTrue(current_user.is_authenticated)
+            self.assert_template_used('home.html')
 
     def test_incorrect_login(self):
         with self.client:
@@ -97,7 +116,6 @@ class LoginTests(BaseTestCase):
 
 
 class RegisterationTests(BaseTestCase):
-
     def test_incorrect_register_username_empty(self):
         with self.client:
             response = self.client.post(
@@ -194,11 +212,13 @@ class RegisterationTests(BaseTestCase):
 
     def test_correct_login(self):
         with self.client:
+            email = "test@gmail.com"
+            password = "test"
             response = self.client.post(
                 '/register',
                 data=dict(
-                    username="test", email="test@gmail.com", password="test",
-                    confirm_password="test"
+                    username="test", email=email, password=password,
+                    confirm_password=password
                 ),
                 follow_redirects=True
             )
@@ -208,6 +228,16 @@ class RegisterationTests(BaseTestCase):
             )
             self.assertFalse(current_user.is_active)
             self.assertFalse(current_user.is_authenticated)
+
+            response = self.client.post(
+                '/login',
+                data=dict(email=email, password=password),
+                follow_redirects=True
+            )
+            self.assert200(response)
+            self.assertTrue(current_user.is_active)
+            self.assertTrue(current_user.is_authenticated)
+            self.assert_template_used('home.html')
 
 
 if __name__ == '__main__':
