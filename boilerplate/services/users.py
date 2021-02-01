@@ -17,8 +17,8 @@ class UserService():
         return UserService.__instance__
 
     def create_user(self, username, email, password):
-        if (username is None) and (email is None) \
-           and (password is None):
+        if (username is None) or (email is None) \
+           or (password is None):
             return None
 
         user = user_dao.get_by_username(username=username)
@@ -71,4 +71,4 @@ class UserService():
             return False
 
 
-user_service = UserService()
+user_service = UserService.get_instance()
