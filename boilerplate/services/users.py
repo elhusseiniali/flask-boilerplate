@@ -60,9 +60,12 @@ class UserService():
             return False
 
         try:
-            user_dao.delete_user_by_id(user_id)
-
-            return True
+            user = user_dao.get_by_id(user_id=int(user_id))
+            if user:
+                user_dao.delete_user_by_id(user_id)
+                return True
+            else:
+                return False
 
         except Exception:
             return False
