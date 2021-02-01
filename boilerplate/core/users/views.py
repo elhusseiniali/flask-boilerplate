@@ -1,7 +1,5 @@
 from flask import Blueprint
-import json
-from flask import render_template, flash, redirect, url_for, request, abort
-from flask import send_file
+from flask import render_template, flash, redirect, url_for, request
 
 from boilerplate.core.users.forms import (RegistrationForm, LoginForm,
                                           UpdateAccountForm)
