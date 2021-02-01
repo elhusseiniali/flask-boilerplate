@@ -36,9 +36,5 @@ class UserDAO():
     def get_by_email(self, email):
         return db.session.query(User).filter_by(email=email).first()
 
-    def delete_user_by_id(self, user_id):
-        db.session.query(User).filter_by(id=user_id).delete()
-        db.session.commit()
-
 
 user_dao = UserDAO()
