@@ -59,9 +59,9 @@ class AddUser(Resource):
         email = args['email']
         password = args['password']
 
-        if not(username is None) and \
-           not(email is None) and \
-           not(password is None):
+        if username and \
+           email and \
+           password:
             try:
                 user_service.create_user(username=username,
                                          email=email,
