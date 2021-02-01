@@ -1,6 +1,5 @@
 from boilerplate.schemas import BaseSchema
-from marshmallow import fields, post_load
-from boilerplate.services.users import user_service
+from marshmallow import fields
 
 
 class UserSchema(BaseSchema):
@@ -13,7 +12,3 @@ class UserSchema(BaseSchema):
     email = fields.Email(required=True)
     password = fields.String(required=True)
     image_file = fields.String(required=False)
-
-    @post_load
-    def make_object(self, data, **kwargs):
-        return user_service.create_user(**data)
