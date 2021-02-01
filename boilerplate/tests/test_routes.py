@@ -50,6 +50,7 @@ class RouteTests(BaseTestCase):
             self.assert_template_used('home.html')
 
     def test_account(self):
+        # Test before logging in
         response = self.client.get(
             '/account', content_type='html/text', follow_redirects=True
         )
@@ -57,6 +58,24 @@ class RouteTests(BaseTestCase):
         self.assert_template_used('login.html')
         self.assert_context("title", "Log in")
         self.assertIn(b'Please log in to access this page.', response.data)
+
+        # Test after logging in
+        with self.client:
+            response = self.client.post(
+                '/login',
+                data=dict(email="ad@min.com", password="admin"),
+                follow_redirects=True
+            )
+            self.assert200(response)
+            self.assertTrue(current_user.is_active)
+            self.assertTrue(current_user.is_authenticated)
+
+            response = self.client.get('/account', content_type='html/text')
+
+            # Another way of checking that a redirect happened
+            # HTTP Code 302 means a redirect happened
+            self.assert_status(response, 200)
+            self.assert_template_used('account.html')
 
     def test_logout(self):
         response = self.client.get(
