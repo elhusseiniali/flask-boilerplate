@@ -71,9 +71,6 @@ class AddUser(Resource):
                 api.abort(422, e, status="Could not save information",
                           statusCode="422")
 
-        api.abort(400, "Bad Request. Check parameters.",
-                  status="Could not save information", statusCode="400")
-
 
 @api.route('/<int:user_id>')
 @api.param('user_id', 'User identifier', required=True)
