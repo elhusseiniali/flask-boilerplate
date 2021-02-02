@@ -43,7 +43,7 @@ def login():
         return redirect(url_for('main.home'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = user_dao.get_by_email(email=form.email.data)
+        user = user_dao.get_by_email(email=form.email.data.casefold())
         if user and user.verify_password(form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
