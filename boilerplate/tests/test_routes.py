@@ -1,6 +1,6 @@
 import unittest
 import os
-import PIL
+from PIL import Image
 
 from flask_login import current_user
 from boilerplate.tests import BaseTestCase
@@ -358,18 +358,13 @@ class AccountTests(BaseTestCase):
             self.assertMessageFlashed("Your account has been successfully"
                                       " updated!", 'success')
 
-            '''
-            original_image = PIL.Image.open(path)
-            new_path = os.path.join(cwd + "/boilerplate/static/profile_"
-                                          "pictures/", current_user.image_file)
-            new_image = PIL.Image.open(new_path)
+            fs_image = Image.open(path).thumbnail((125, 125))
+            new_path = os.path.join(cwd + "/boilerplate/static/"
+                                          "profile_pictures/",
+                                    current_user.image_file)
+            db_image = Image.open(new_path).thumbnail((125, 125))
 
-            self.assertIsNone(PIL.ImageChops.difference(original_image,
-                                                        new_image).getbbox())
-            '''
-
-            new_path = os.path.join(cwd + "/boilerplate/static/profile_"
-                                          "pictures/", current_user.image_file)
+            self.assertEqual(fs_image, db_image)
             os.remove(new_path)
 
     def test_account_update_image_empty(self):
