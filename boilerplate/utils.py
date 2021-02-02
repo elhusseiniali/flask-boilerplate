@@ -1,8 +1,7 @@
 import os
 import secrets
 from flask import current_app
-from PIL import Image
-import PIL
+from PIL import Image, ImageFile
 
 
 def save_image(source_image, path, output_size=(125, 125)):
@@ -57,7 +56,7 @@ def compress_image(image, output_size=(125, 125)):
     [i]
         Compressed image.
     """
-    if isinstance(image, PIL.ImageFile.ImageFile):
+    if isinstance(image, ImageFile.ImageFile):
         i = image
     else:
         i = Image.open(image)
