@@ -1,7 +1,11 @@
 import unittest
+import os
+import PIL
 
 from flask_login import current_user
 from boilerplate.tests import BaseTestCase
+from boilerplate.dao.users import user_dao
+from werkzeug.datastructures import FileStorage
 
 
 class RouteTests(BaseTestCase):
@@ -273,6 +277,124 @@ class RegisterationTests(BaseTestCase):
             self.assertTrue(current_user.is_active)
             self.assertTrue(current_user.is_authenticated)
             self.assert_template_used('home.html')
+
+
+class AccountTests(BaseTestCase):
+
+    def test_account_update_username(self):
+        with self.client:
+            response = self.client.post(
+                '/login',
+                data=dict(email="ad@min.com", password="admin")
+            )
+
+            self.assertStatus(response, 302)
+            self.assertTrue(current_user.is_active)
+            self.assertTrue(current_user.is_authenticated)
+
+            response = self.client.post(
+                '/account',
+                data=dict(username="admin2")
+            )
+            self.assertStatus(response, 302)
+            self.assertRedirects(response, '/account')
+            self.assertMessageFlashed("Your account has been successfully"
+                                      " updated!", 'success')
+
+            user = user_dao.get_by_id(1)
+            self.assertEqual(user.username, "admin2")
+
+    def test_account_update_email(self):
+        with self.client:
+            response = self.client.post(
+                '/login',
+                data=dict(email="ad@min.com", password="admin")
+            )
+
+            self.assertStatus(response, 302)
+            self.assertTrue(current_user.is_active)
+            self.assertTrue(current_user.is_authenticated)
+
+            response = self.client.post(
+                '/account',
+                data=dict(username="admin", email='ad2@min.com')
+            )
+            self.assertStatus(response, 302)
+            self.assertRedirects(response, '/account')
+            self.assertMessageFlashed("Your account has been successfully"
+                                      " updated!", 'success')
+
+            user = user_dao.get_by_id(1)
+            self.assertEqual(user.email, 'ad2@min.com')
+
+    def test_account_update_image(self):
+        with self.client:
+            response = self.client.post(
+                '/login',
+                data=dict(email="ad@min.com", password="admin")
+            )
+
+            self.assertStatus(response, 302)
+            self.assertTrue(current_user.is_active)
+            self.assertTrue(current_user.is_authenticated)
+
+            cwd = os.getcwd()
+            path = os.path.join(cwd + "/boilerplate/static/profile_pictures/",
+                                      "d5d2195b1e812421.jpg")
+
+            image = FileStorage(
+                stream=open(path, "rb"),
+                filename="test.jpg",
+                content_type="image/jpeg",
+            )
+
+            response = self.client.post(
+                '/account',
+                data=dict(username="admin", email='ad2@min.com', image=image),
+                content_type='multipart/form-data'
+            )
+            self.assertStatus(response, 302)
+            self.assertRedirects(response, '/account')
+            self.assertMessageFlashed("Your account has been successfully"
+                                      " updated!", 'success')
+
+            '''
+            original_image = PIL.Image.open(path)
+            new_path = os.path.join(cwd + "/boilerplate/static/profile_"
+                                          "pictures/", current_user.image_file)
+            new_image = PIL.Image.open(new_path)
+
+            self.assertIsNone(PIL.ImageChops.difference(original_image,
+                                                        new_image).getbbox())
+            '''
+
+            new_path = os.path.join(cwd + "/boilerplate/static/profile_"
+                                          "pictures/", current_user.image_file)
+            os.remove(new_path)
+
+    def test_account_update_image_empty(self):
+        with self.client:
+            response = self.client.post(
+                '/login',
+                data=dict(email="ad@min.com", password="admin")
+            )
+
+            self.assertStatus(response, 302)
+            self.assertTrue(current_user.is_active)
+            self.assertTrue(current_user.is_authenticated)
+
+            response = self.client.post(
+                '/account',
+                data=dict(username="admin", email='ad2@min.com', image=None),
+                content_type='multipart/form-data'
+            )
+            self.assertStatus(response, 302)
+            self.assertRedirects(response, '/account')
+            self.assertMessageFlashed("Your account has been successfully"
+                                      " updated!", 'success')
+
+            user = user_dao.get_by_id(1)
+            self.assertEqual(user.image_file, 'default.jpg')
 
 
 if __name__ == '__main__':
