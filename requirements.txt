@@ -28,7 +28,7 @@ MarkupSafe==1.1.1
 marshmallow==3.10.0
 mccabe==0.6.1
 packaging==20.9
-Pillow==8.1.1
+Pillow==8.2.0
 pluggy==0.13.1
 py==1.10.0
 py-moneyed==0.8.0
